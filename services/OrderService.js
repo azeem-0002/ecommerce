@@ -118,6 +118,9 @@ class OrderService extends BaseService {
       if (!order) throw { status: 404, message: 'Order not found' };
       if (order.status === 'cancelled') throw { status: 400, message: 'Order is cancelled' };
 
+      if (order.status === 'confirmed') {
+        throw { status: 400, message: 'Order is already confirmed. Stock cannot be reduced again.' };
+      }
       // reduce stock
       for (const item of order.items) {
         if (item.productVariantId) {
@@ -131,7 +134,7 @@ class OrderService extends BaseService {
 
       // update order data
       if (updates.status) order.status = updates.status;
-      if (updates.paymentReference) order.paymentReference = updates.paymentReference;
+      if (updates.orderNumber) order.orderNumber = updates.orderNumber;
 
       await order.save({ transaction: t });
       await t.commit();

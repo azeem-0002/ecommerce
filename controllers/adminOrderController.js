@@ -22,7 +22,7 @@ exports.update = async (req, res, next) => {
     // allow updating status, paymentReference
     const updates = {};
     if (req.body.status) updates.status = req.body.status;
-    if (req.body.paymentReference) updates.paymentReference = req.body.paymentReference;
+    if (req.body.orderNumber) updates.orderNumber = req.body.orderNumber;
     if (updates.status === 'confirmed') {
       const o = await service.confirmOrder(req.params.id, updates);
       res.json(o);
