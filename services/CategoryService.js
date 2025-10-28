@@ -6,7 +6,8 @@ class CategoryService extends BaseService {
     this.Category = models.Category;
     this.Product = models.Product;
     this.ProductVariant = models.ProductVariant;
-    this.ProductImage = models.ProductImage; 
+    this.ProductImage = models.ProductImage;
+    this.sequelize = models.sequelize;
   }
 
   async list() {
@@ -27,33 +28,33 @@ class CategoryService extends BaseService {
     return cat.update(data);
   }
   async delete(id) {
-    const t = await sequelize.transaction();
+    const t = await this.sequelize.transaction();
     try {
       // 1️⃣ Find the category
-      const category = await Category.findByPk(id, { transaction: t });
+      const category = await this.Category.findByPk(id, { transaction: t });
       if (!category) throw { status: 404, message: 'Category not found' };
 
       // 2️⃣ Find all products belonging to this category
-      const products = await Product.findAll({
+      const products = await this.Product.findAll({
         where: { categoryId: id },
         transaction: t,
       });
 
       // 3️⃣ Delete related variants and images for each product
       for (const product of products) {
-        await ProductVariant.destroy({
+        await this.ProductVariant.destroy({
           where: { productId: product.id },
           transaction: t,
         });
 
-        await ProductImage.destroy({
+        await this.ProductImage.destroy({
           where: { productId: product.id },
           transaction: t,
         });
       }
 
       // 4️⃣ Delete all products under this category
-      await Product.destroy({
+      await this.Product.destroy({
         where: { categoryId: id },
         transaction: t,
       });
