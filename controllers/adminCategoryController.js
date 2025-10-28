@@ -32,7 +32,12 @@ exports.update = async (req, res, next) => {
 
 exports.remove = async (req, res, next) => {
   try {
-    await service.delete(req.params.id);
-    res.json({ success: true });
-  } catch (err) { next(err); }
+    const result = await service.delete(req.params.id);
+    res.json({
+      success: true,
+      message: result.message || 'Category and related data deleted successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
 };
