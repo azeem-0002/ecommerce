@@ -17,10 +17,15 @@ module.exports = (sequelize, DataTypes) => {
     description: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+     deletedAt: { // ✅ added soft delete column
+      type: DataTypes.DATE,
+      allowNull: true
     }
   }, {
     tableName: 'Categories',
-    timestamps: true
+    timestamps: true,
+    paranoid: true
   });
 
   Category.associate = (models) => {

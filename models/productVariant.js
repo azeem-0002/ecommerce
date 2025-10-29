@@ -9,10 +9,15 @@ module.exports = (sequelize, DataTypes) => {
     size: { type: DataTypes.STRING, allowNull: true },
     color: { type: DataTypes.STRING, allowNull: true },
     stock: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
-    imageUrl: { type: DataTypes.STRING, allowNull: true }
+    imageUrl: { type: DataTypes.STRING, allowNull: true },
+    deletedAt: { // ✅ added soft delete column
+      type: DataTypes.DATE,
+      allowNull: true
+    }
   }, {
     tableName: 'ProductVariants',
-    timestamps: true
+    timestamps: true,
+    paranoid: true
   });
 
   ProductVariant.associate = models => {

@@ -20,10 +20,23 @@ class VariantService extends BaseService {
   }
 
   async delete(productId, variantId) {
-    const variant = await this.Variant.findOne({ where: { id: variantId, productId } });
+    // Find the variant that’s not already deleted
+    const variant = await this.Variant.findOne({
+      where: {
+        id: variantId,
+        productId,
+        deletedAt: null
+      }
+    });
+
     if (!variant) throw { status: 404, message: 'Variant not found' };
-    return variant.destroy();
+
+    // Soft delete → mark as deleted
+    await variant.update({ deletedAt: new Date() });
+
+    return { message: 'Variant deleted successfully (soft delete)' };
   }
+
 }
 
 module.exports = VariantService;

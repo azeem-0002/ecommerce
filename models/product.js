@@ -5,10 +5,15 @@ module.exports = (sequelize, DataTypes) => {
     title: { type: DataTypes.STRING, allowNull: false },
     slug: { type: DataTypes.STRING, allowNull: false },
     description: { type: DataTypes.TEXT, allowNull: true },
-    categoryId: { type: DataTypes.BIGINT.UNSIGNED, allowNull: false }
+    categoryId: { type: DataTypes.BIGINT.UNSIGNED, allowNull: false },
+    deletedAt: { // ✅ added soft delete column
+      type: DataTypes.DATE,
+      allowNull: true
+    }
   }, {
     tableName: 'Products',
-    timestamps: true
+    timestamps: true,
+    paranoid: true
   });
 
   Product.associate = models => {
